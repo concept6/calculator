@@ -1,0 +1,47 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 10em;
+    height: 10em;
+    border: 2px solid black;
+    padding: 0.5em;
+
+}
+
+.display {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    border: 1px solid brown;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+}
+
+.button {
+    border: 2px solid blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2em;
+}
+
+.number {
+    border: 2px solid blue;
+}
+
+.operator {
+    border: 2px solid red;
+}
+
+.clear {
+    border: 2px solid green;
+    width: 3em;
+    
+}
