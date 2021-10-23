@@ -1,6 +1,4 @@
-// copying in my calculation functions from the odin project javascript exercise
-// commenting out ones not need/not working (array not iterable?)
-
+//helper functions to operate calculator
 function add (a, b) {
 	return a + b;
 };
@@ -9,50 +7,15 @@ function subtract (a, b) {
 	return a - b;
 };
 
-/* function sum (array) {
-	let totalSum = 0;
-	for (const numEach of array) {
-      totalSum = totalSum + numEach;
-    }
-  return totalSum;
-}; */
-
 function multiply (a, b) {
   return a * b;
 };
-
-/* function multiply (array) {
-  let sum = 1;
-  for (const numEach of array) {
-    sum = sum * numEach;
-  }
-  return sum;
-}; */
-
-/* function power (a, b) {
-  let sum = a;
-  for (let i = 1; i < b; i++) {
-    sum = sum * a;
-  }
-  return sum;
-}; */
-
-/* function factorial(a) {
-	let sum = 1;
-  for (let i = 1; i <= a; i++){
-    sum = sum * i;
-  }
-  return sum;
-}; */
-
-// add a divide function
 
 function divide(a, b) {
     return a / b; // todo verify decimals etc.
 }
 
-
-// new function operate
+// new operate runs the functions
 
 function operate(operator, a, b) {
     let stringFunctionName = String(operator) //redundant
@@ -61,35 +24,24 @@ function operate(operator, a, b) {
     return window[stringFunctionName](a,b);
 }
 
-
-
-
-let check = operate('add', 2, 4);
-
-let lol = check;
-
-
-//will be using these three global variables to work the display
+//will be using these three semi-global variables to work the display
 var calculatorSpace = {
   displayNumber: '0',
   hiddenNumber: '',
   preparedOperator: ''
 }
 
-//todo: functions that populate discplay when number buttons are clicked
 
-
-
-
-//todo move this elsewhere
 function clickedClearButton() {
   calculatorSpace.displayNumber = '0';
-  calculatorSpace.hiddenNumber = ''
+  calculatorSpace.hiddenNumber = '';
+  calculatorSpace.preparedOperator = '';
   display.textContent = calculatorSpace.displayNumber;
   return;
 }
 
-
+// runs when a number is clicked
+// updates the display number and updates the display
 function updateDisplayNumber(e) {
   let numberEntered = e.currentTarget.textContent;
   if (calculatorSpace.displayNumber === '0') {
@@ -101,18 +53,33 @@ function updateDisplayNumber(e) {
   return;
 }
 
-
+// runs when an operator is clicked
+// if there is an existing hidden number, runs operate on the hidden and display
+// and changes the hidden to the outcome of that operation
+// if there is no existing hidden number, changes the display to hidden and prepares the operator
 function introduceSecondNumber(e) {
+  
+  if (calculatorSpace.hiddenNumber !== '') {
+    runOperate(false);
+  }
+
+  calculatorSpace.preparedOperator = e.currentTarget.textContent;
   calculatorSpace.hiddenNumber = calculatorSpace.displayNumber;
   calculatorSpace.displayNumber = '0';
-  display.textContent = calculatorSpace.displayNumber;
-  calculatorSpace.preparedOperator = e.currentTarget.textContent;
   return;
 }
 
+// runs when equals is clicked.
+// runs operate on the hidden and display numbers
+// sets the display to the output
+// and updates the display
+function runOperate(updateDisplayBool) {
+
+  if (!calculatorSpace.hiddenNumber || !calculatorSpace.preparedOperator || calculatorSpace.displayNumber === '0') {
+    return false;
+  }
 
 
-function runOperate(e) {
   let operatorFullText = '';
   switch (calculatorSpace.preparedOperator) {
     case '÷':
@@ -133,12 +100,28 @@ function runOperate(e) {
       break
   }
 
-
-
-  calculatorSpace.displayNumber = Math.round(operate(operatorFullText,calculatorSpace.hiddenNumber,calculatorSpace.displayNumber) * 100) / 100;
-  display.textContent = calculatorSpace.displayNumber;
+  calculatorSpace.displayNumber = String(Math.round(operate(operatorFullText,calculatorSpace.hiddenNumber,calculatorSpace.displayNumber) * 100) / 100);
+  
+  if (updateDisplayBool) {
+    display.textContent = calculatorSpace.displayNumber;
+  }
+  calculatorSpace.hiddenNumber = '';
   return;
 }
+
+
+function addDecimal() {
+  if (calculatorSpace.displayNumber.includes('.')) {
+    return false;
+  }
+  if (calculatorSpace.displayNumber === '0') {
+    calculatorSpace.displayNumber = '0.';
+  } else {
+    calculatorSpace.displayNumber = calculatorSpace.displayNumber + '.';
+  }
+  display.textContent = calculatorSpace.displayNumber;
+}
+
 
 
 const display = document.querySelector('.display');
@@ -157,3 +140,7 @@ operatorButtons.forEach(operatorButton => operatorButton.addEventListener('click
 
 const equalsButton = document.querySelector('.equals');
 equalsButton.addEventListener('click',runOperate);
+
+
+const decimalButton = document.querySelector('.decimal');
+decimalButton.addEventListener('click',addDecimal);
